@@ -1,29 +1,31 @@
+import { useEffect, useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import About from './components/About';
-import Home from './components/Home';
-import Contact from './components/Contact';
+import Button from './components/Button';
+import Footer from './components/Footer';
+import Header from './components/Header';
+import axios from 'axios';
 
 function App() {
+  // fetch data from api, empty array as initial state
+  const [data, setData] =  useState([]);
+
+  useEffect(() => {
+    axios.get("https://jsonplaceholder.typicode.com/posts")
+    .then(response => setData(response.data))
+    .catch(error => console.log("Error fetching data from api"));
+},[]);
+
   return (
     <div>
-      <h1>Welcome to my react app</h1>
-      <Router>
-        <div>
-          <nav>
-            <ul>
-            <li><Link to='/'>Home</Link></li>
-            <li><Link to='/about'>About</Link></li>
-            <li><Link to='/contact'>Contact Us</Link></li>
-            </ul>
-          </nav>
-          <Routes>
-            <Route exact path='/' element={<Home/>}/>
-            <Route exact path='/about' element={<About/>}/>
-            <Route exact path='/contact' element={<Contact />}/>
-          </Routes>
-        </div>
-      </Router>
+      <Header/>
+      <h1>My React App</h1>
+      <ul>
+        {data.map(item => (
+          <li key={item.id}>{item.title}</li>
+        ))}
+      </ul>
+      <Button label="Click Here" />
+      <Footer/>
     </div>
   );
 }
